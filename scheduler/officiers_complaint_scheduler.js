@@ -9,9 +9,8 @@ export const main = (event, context, callback) => {
         
         console.log(record.dynamodb);
         const data = record.dynamodb.NewImage
-        const parseData = parse({ 'M':  data})
+        const parseData = parse({ 'M':  data })
         console.log(parseData);
-        
         const params = {
             TableName: process.env.COMPLAINTS_TABLE,
             IndexName: 'officier_assigned-index',
@@ -35,7 +34,7 @@ export const main = (event, context, callback) => {
                     updateOfficier(results.Items)
                 }
         })
-    
+
         const updateOfficier = (results) => {
         
                 results.map((result) => {
@@ -87,14 +86,15 @@ export const main = (event, context, callback) => {
                         }
                     })
         
-                })
+        })
                 
         
-        }  
+        } 
+        
     
     })
 
-    
+         
 
 
     

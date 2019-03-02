@@ -149,9 +149,14 @@ functions:
   officiers_complaint_scheduler:
     handler: scheduler/officiers_complaint_scheduler.main
     name: ${self:provider.stage}-officiers_complaint_scheduler
-    events:
-      - stream: arn:aws:dynamodb:ap-south-1:166341922662:table/officiers_test/stream/2019-03-02T03:32:57.266
-    
+    # events:
+    #   - stream: arn:aws:dynamodb:ap-south-1:166341922662:table/officiers_test/stream/2019-03-02T03:32:57.266
+  
+  complaints_assigned_scheduler:
+    handler: scheduler/complaints_assigned_scheduler.main
+    name: ${self:provider.stage}-complaints_assigned_scheduler
+    # events:
+      # - stream: arn:aws:dynamodb:ap-south-1:166341922662:table/officiers_test/stream/2019-03-02T03:32:57.266
 # Resources
 resources:
   Resources:
@@ -197,6 +202,8 @@ resources:
             AttributeType: N
           - AttributeName: username
             AttributeType: S
+          - AttributeName: postingpincode
+            AttributeType: S
         KeySchema:
           - AttributeName: officierid
             KeyType: HASH
@@ -211,5 +218,13 @@ resources:
             KeyType: HASH
           Projection:
             ProjectionType: ALL
+        - IndexName: pincode-index
+          KeySchema:
+          - AttributeName: postingpincode
+            KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+    
+
 
 
