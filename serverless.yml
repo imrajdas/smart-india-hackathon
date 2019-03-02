@@ -59,6 +59,17 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
+      Resource: arn:aws:dynamodb:ap-south-1:*:table/complaints_${opt:stage, "prod"}/index/officier_assigned-index
+
+    - Effect: "Allow"
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
       Resource: arn:aws:dynamodb:ap-south-1:*:table/officiers_${opt:stage, "prod"}
   
     - Effect: "Allow"

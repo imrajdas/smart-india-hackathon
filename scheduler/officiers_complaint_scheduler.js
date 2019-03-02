@@ -47,7 +47,7 @@ export const main = (event, context, callback) => {
                                     Key: {
                                         complaintid: parseInt(result.complaintid)
                                     },
-                                    UpdateExpression: `SET #officierid = :officierid AND #officier_assigned = :officier_assigned`,
+                                    UpdateExpression: `SET #officierid = :officierid, #officier_assigned = :officier_assigned`,
                                     ExpressionAttributeNames:{
                                         '#officierid': 'officierid',
                                         '#officier_assigned': 'officier_assigned'

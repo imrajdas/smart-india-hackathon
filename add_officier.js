@@ -3,6 +3,7 @@ import { success, failure } from './inc/response';
 const documentClient = new aws.DynamoDB.DocumentClient();
 const sgMail = require('@sendgrid/mail');
 var jwt = require('jsonwebtoken');
+const axios = require('axios')
 // sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const genPassword = () => {
@@ -17,16 +18,16 @@ const genPassword = () => {
 
 export const main = (event, context, callback) => {
 
-   const data = JSON.parse(event.body)
-//    const data = {
-//        firstname: "Raj",
-//        lastname: "Das",
-//        rank: "DC",
-//        postingarea: "Bhubaneswar",
-//        postedfrom: "2019-08-02",
-//        phone: "7809694275",
-//        email: "mail.rajdas@gmail.com",
-//    }
+//    const data = JSON.parse(event.body)
+   const data = {
+       firstname: "Raj",
+       lastname: "Das",
+       rank: "DC",
+       postingarea: "Bhubaneswar",
+       postedfrom: "2019-08-02",
+       phone: "7809694275",
+       email: "mail.rajdas@gmail.com",
+   }
    console.log(data);
    
    const genUserName = `${data.lastname}${data.firstname}${Math.floor(Math.random() * 90 + 10 * 999)}`
@@ -58,13 +59,23 @@ export const main = (event, context, callback) => {
        }
    }
  
-
+   
    documentClient.put(params, (err, result) => {
         if(err) {
             console.log(err);
             callback(null , failure({ status: false, message: 'failed to registered complaint' }))
         } else {
             console.log(params.Item)
+
+            const msg = `Your Username- ${genUserName.toLowerCase()} Password- ${genPass}`
+            const url = `http://login.smsadda.com/API/pushsms.aspx?loginID=giit&password=giitpc&mobile=+91${data.phone}&text=${msg}&senderid=GIITPC&route_id=1&Unicode=0`
+            axios.get(url).then(function(response){
+                console.log(response);
+                callback(null, success({status: true, message: 'officier add successfully' }))
+            })
+            .catch(function(err){
+                console.log(err);
+            })
             // const msg = {
             //     to: `${data.email}`,
             //     from: 'test@example.com',
@@ -76,7 +87,6 @@ export const main = (event, context, callback) => {
             // };
             // sgMail.send(msg);
         
-            callback(null, success({status: true, message: 'officier add successfully' }))
         }
    })
 }
