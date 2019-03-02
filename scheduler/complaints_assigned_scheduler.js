@@ -5,48 +5,43 @@ const documentClient = new aws.DynamoDB.DocumentClient();
 
 export const main = (event, context, callback) => {
     console.log(event);
-    // event.Records.map((record) => {
-    //     console.log(record.dynamodb);
-    //     const data = record.dynamodb.NewImage
-    //     const parseData = parse({ 'M':  data})
-    //     console.log(parseData);
-        
-        
-    
-    // })
-    const parseData = {
-        pincode: '751024',
-        complaintid: '6203606243'
-    }
-    const params = {
-        TableName: process.env.OFFICIERS_TABLE,
-        IndexName: 'pincode-index',
-        KeyConditionExpression: '#postingpincode = :postingpincode',
-        ExpressionAttributeNames:{
-            '#postingpincode': 'postingpincode'
-        },
-        ExpressionAttributeValues: {
-            ':postingpincode': parseData.pincode  
-        }
-    };
-    console.log(params);
-    
-    documentClient.query(params, (err, results) => {
-            if(err) {
-                console.log(err);
-            } else {
-                console.log(results)
-                // updateOfficier(results.Items)
+    event.Records.map((record) => {
+        console.log(record.dynamodb);
+        const data = record.dynamodb.NewImage
+        const parseData = parse({ 'M':  data})
+        console.log(parseData);
+        const params = {
+            TableName: process.env.OFFICIERS_TABLE,
+            IndexName: 'pincode-index',
+            KeyConditionExpression: '#postingpincode = :postingpincode',
+            ExpressionAttributeNames:{
+                '#postingpincode': 'postingpincode'
+            },
+            ExpressionAttributeValues: {
+                ':postingpincode': parseData.pincode  
             }
-    })
-
-    const updateOfficier = (results) => {
-            const min = results[0]
-            for(let i=0; i <results.length; i++){
-                if(results[i].complaints.length < min.complaints.length){
-                    min = results[i]
+        };
+        console.log(params);
+        
+        documentClient.query(params, (err, results) => {
+                if(err) {
+                    console.log(err);
+                } else {
+                    console.log(results)
+                    updateOfficier(results.Items)
                 }
-            }
+        })
+
+        const updateOfficier = (results) => {
+                let min = results[0]
+                
+                for(let i=0; i <results.length; i++){
+                    if(min.complaints.values.length > results[i].complaints.values.length){
+                        min = results[i]
+                    }
+                }
+                
+                console.log(min);
                 
                 const params = {
                     TransactItems: [
@@ -94,5 +89,7 @@ export const main = (event, context, callback) => {
                         console.log('success',result)
                     }
                 })
-    }  
+        }
+    })
+      
 }
