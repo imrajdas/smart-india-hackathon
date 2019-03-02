@@ -26,7 +26,7 @@ export const main = (event, context, callback) => {
    documentClient.query(params, (err, result) => {
         if(err) {
             console.log(err);
-            callback(null , failure({ status: false, message: 'failed to registered complaint' }))
+            callback(null , failure({ status: false, message: 'auth failed' }))
         } else {
             console.log(result)
             if(result.Count === 1){

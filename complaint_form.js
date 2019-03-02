@@ -28,7 +28,7 @@ export const main = (event, context, callback) => {
        TableName: process.env.COMPLAINTS_TABLE,
        Item:{
         complaintid: Math.floor(Math.random() * 1000 * 60 * 60 * 24 * 365.25),
-        name: data.name,
+        name: data.fullname,
         lin: data.lin,
         address: data.address,
         district: data.district,
@@ -47,6 +47,7 @@ export const main = (event, context, callback) => {
         /*
             new complaints - 1
             approved - 2
+            
         */
 
         critical: false,

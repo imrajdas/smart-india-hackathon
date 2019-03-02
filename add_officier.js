@@ -18,16 +18,16 @@ const genPassword = () => {
 
 export const main = (event, context, callback) => {
 
-//    const data = JSON.parse(event.body)
-   const data = {
-       firstname: "Raj",
-       lastname: "Das",
-       rank: "DC",
-       postingarea: "Bhubaneswar",
-       postedfrom: "2019-08-02",
-       phone: "7809694275",
-       email: "mail.rajdas@gmail.com",
-   }
+   const data = JSON.parse(event.body)
+//    const data = {
+//        firstname: "Raj",
+//        lastname: "Das",
+//        rank: "DC",
+//        postingarea: "Bhubaneswar",
+//        postedfrom: "2019-08-02",
+//        phone: "7809694275",
+//        email: "mail.rajdas@gmail.com",
+//    }
    console.log(data);
    
    const genUserName = `${data.lastname}${data.firstname}${Math.floor(Math.random() * 90 + 10 * 999)}`

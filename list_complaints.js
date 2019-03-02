@@ -4,28 +4,44 @@ const documentClient = new aws.DynamoDB.DocumentClient();
 
 export const main = (event, context, callback) => {
 
-    const params = {
-        TableName: process.env.COMPLAINTS_TABLE,
-        IndexName: 'officierid-index',
-        KeyConditionExpression: '#officierid = :officierid',
-        ExpressionAttributeNames:{
-            '#officierid': 'officierid',
-        },
-        ExpressionAttributeValues: {
-            ':officierid': parseInt(event.pathParameters.officierid,)
-            // ':officierid': 25570227430
+    const data = JSON.parse(event.body)
+    console.log(data);
 
-        }
-    };
-
-   documentClient.query(params, (err, results) => {
-        if(err) {
-            console.log(err);
-            callback(null , failure({ status: false, message: 'failed to registered complaint' }))
-        } else {
-            console.log(results)
-            callback(null , success({ status: true, message: results.Items }))
-
-        }
-   })
+    /*
+        status 0- not assigned
+        status 1- new complaints
+        status 2- pending complaints
+        status 3- closed commplaints
+        status 5- decline complaints
+    */
+   
+    if(data.type === 1){
+        const params = {
+            TableName: process.env.COMPLAINTS_TABLE,
+            IndexName: 'officierid-index',
+            KeyConditionExpression: '#officierid = :officierid AND #status = :1',
+            ExpressionAttributeNames:{
+                '#officierid': 'officierid',
+                '#status': 'status'
+            },
+            ExpressionAttributeValues: {
+                ':officierid': parseInt(event.pathParameters.officierid),
+                // ':officierid': 25570227430
+                ':1': 1
+    
+            }
+        };
+    
+       documentClient.query(params, (err, results) => {
+            if(err) {
+                console.log(err);
+                callback(null , failure({ status: false, message: 'failed to registered complaint' }))
+            } else {
+                console.log(results)
+                callback(null , success({ status: true, message: results.Items }))
+    
+            }
+       })
+    }
+    
 }
