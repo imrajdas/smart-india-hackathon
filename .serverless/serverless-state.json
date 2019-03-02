@@ -83,6 +83,19 @@
             "dynamodb:DeleteItem"
           ],
           "Resource": "arn:aws:dynamodb:ap-south-1:*:table/officiers_test/index/username-index"
+        },
+        {
+          "Effect": "Allow",
+          "Action": [
+            "dynamodb:DescribeTable",
+            "dynamodb:Query",
+            "dynamodb:Scan",
+            "dynamodb:GetItem",
+            "dynamodb:PutItem",
+            "dynamodb:UpdateItem",
+            "dynamodb:DeleteItem"
+          ],
+          "Resource": "arn:aws:dynamodb:ap-south-1:*:table/officiers_test/index/pincode-index"
         }
       ],
       "remoteFunctionData": null,
@@ -265,6 +278,9 @@
                       },
                       {
                         "$ref": "$[\"service\"][\"provider\"][\"iamRoleStatements\"][4]"
+                      },
+                      {
+                        "$ref": "$[\"service\"][\"provider\"][\"iamRoleStatements\"][5]"
                       }
                     ]
                   }
@@ -291,7 +307,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/backend-api/test/1551517736003-2019-03-02T09:08:56.003Z/backend-api.zip"
+                "S3Key": "serverless/backend-api/test/1551519911181-2019-03-02T09:45:11.181Z/backend-api.zip"
               },
               "FunctionName": "test-complaint_form",
               "Handler": "complaint_form.main",
@@ -324,7 +340,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/backend-api/test/1551517736003-2019-03-02T09:08:56.003Z/backend-api.zip"
+                "S3Key": "serverless/backend-api/test/1551519911181-2019-03-02T09:45:11.181Z/backend-api.zip"
               },
               "FunctionName": "test-complaint_update",
               "Handler": "complaint_update.main",
@@ -357,7 +373,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/backend-api/test/1551517736003-2019-03-02T09:08:56.003Z/backend-api.zip"
+                "S3Key": "serverless/backend-api/test/1551519911181-2019-03-02T09:45:11.181Z/backend-api.zip"
               },
               "FunctionName": "test-add_officier",
               "Handler": "add_officier.main",
@@ -390,7 +406,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/backend-api/test/1551517736003-2019-03-02T09:08:56.003Z/backend-api.zip"
+                "S3Key": "serverless/backend-api/test/1551519911181-2019-03-02T09:45:11.181Z/backend-api.zip"
               },
               "FunctionName": "test-list_complaints",
               "Handler": "list_complaints.main",
@@ -423,7 +439,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/backend-api/test/1551517736003-2019-03-02T09:08:56.003Z/backend-api.zip"
+                "S3Key": "serverless/backend-api/test/1551519911181-2019-03-02T09:45:11.181Z/backend-api.zip"
               },
               "FunctionName": "test-officier_login",
               "Handler": "officier_login.main",
@@ -456,7 +472,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/backend-api/test/1551517736003-2019-03-02T09:08:56.003Z/backend-api.zip"
+                "S3Key": "serverless/backend-api/test/1551519911181-2019-03-02T09:45:11.181Z/backend-api.zip"
               },
               "FunctionName": "test-list_officier",
               "Handler": "list_officier.main",
@@ -489,7 +505,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/backend-api/test/1551517736003-2019-03-02T09:08:56.003Z/backend-api.zip"
+                "S3Key": "serverless/backend-api/test/1551519911181-2019-03-02T09:45:11.181Z/backend-api.zip"
               },
               "FunctionName": "test-sentiment_scheduler",
               "Handler": "scheduler/sentiment_scheduler.main",
@@ -522,7 +538,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/backend-api/test/1551517736003-2019-03-02T09:08:56.003Z/backend-api.zip"
+                "S3Key": "serverless/backend-api/test/1551519911181-2019-03-02T09:45:11.181Z/backend-api.zip"
               },
               "FunctionName": "test-officiers_complaint_scheduler",
               "Handler": "scheduler/officiers_complaint_scheduler.main",
@@ -555,7 +571,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/backend-api/test/1551517736003-2019-03-02T09:08:56.003Z/backend-api.zip"
+                "S3Key": "serverless/backend-api/test/1551519911181-2019-03-02T09:45:11.181Z/backend-api.zip"
               },
               "FunctionName": "test-complaints_assigned_scheduler",
               "Handler": "scheduler/complaints_assigned_scheduler.main",
@@ -1312,7 +1328,7 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1551517736790": {
+          "ApiGatewayDeployment1551519911990": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -2175,7 +2191,7 @@
     "layers": {}
   },
   "package": {
-    "artifactDirectoryName": "serverless/backend-api/test/1551517736003-2019-03-02T09:08:56.003Z",
+    "artifactDirectoryName": "serverless/backend-api/test/1551519911181-2019-03-02T09:45:11.181Z",
     "artifact": ""
   }
 }
