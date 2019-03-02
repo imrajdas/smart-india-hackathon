@@ -46,16 +46,18 @@ export const main = (event, context, callback) => {
                                     Key: {
                                         complaintid: parseInt(result.complaintid)
                                     },
-                                    UpdateExpression: `SET #officierid = :officierid, #officier_assigned = :officier_assigned`,
+                                    UpdateExpression: `SET #officierid = :officierid, #officier_assigned = :officier_assigned, #status = :status`,
                                     ExpressionAttributeNames:{
                                         '#officierid': 'officierid',
-                                        '#officier_assigned': 'officier_assigned'
+                                        '#officier_assigned': 'officier_assigned',
+                                        '#status': 'status'
                                     },
                                     ExpressionAttributeValues: {
-                                        ":officierid": parseInt(parseData.officierid),
-                                        ":officier_assigned": 1
+                                        ':officierid': parseInt(parseData.officierid),
+                                        ':officier_assigned': 1,
+                                        ':1': 1
                                     },
-                                    ReturnValues: "ALL_NEW"
+                                    ReturnValues: 'ALL_NEW'
                                 }
                             },
                             {
@@ -69,9 +71,9 @@ export const main = (event, context, callback) => {
                                         '#complaints': 'complaints'
                                     },
                                     ExpressionAttributeValues: {
-                                        ":complaints": documentClient.createSet([result.complaintid.toString()])
+                                        ':complaints': documentClient.createSet([result.complaintid.toString()])
                                     },
-                                    ReturnValues: "ALL_NEW"
+                                    ReturnValues: 'ALL_NEW'
                                 }
                             }
                         ]
@@ -86,9 +88,7 @@ export const main = (event, context, callback) => {
                         }
                     })
         
-        })
-                
-        
+        })        
         } 
         
     

@@ -4,7 +4,7 @@ import { create } from 'domain';
 const documentClient = new aws.DynamoDB.DocumentClient();
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
+const axios = require('axios')
 export const main = (event, context, callback) => {
 
    const data = JSON.parse(event.body)
@@ -35,7 +35,7 @@ export const main = (event, context, callback) => {
         state: data.state,
         pincode: data.pincode,
         phone: data.phone,
-        email: data.email,
+        email: data.email || '-',
         company_name: data.company_name,
         position: data.position,
         problem_category: data.problem_category,
@@ -44,6 +44,7 @@ export const main = (event, context, callback) => {
         union_name: data.union_name || null,
         status: 0,
         officierid: 0,
+        reports: [],
         /*
             new complaints - 1
             approved - 2
@@ -65,15 +66,18 @@ export const main = (event, context, callback) => {
             callback(null , failure({ status: false, message: 'failed to registered complaint' }))
         } else {
             console.log(params.Item)
-            const msg = {
-                to: `${data.email}`,
-                from: 'test@example.com',
-                subject: 'Complaint Status',
-                text: `Your complaint has been registered and registered to proceed. Your complaint Id: ${data.complaintid}`,
-            };
-            sgMail.send(msg);
-        
-            callback(null, success({status: true, message: 'complaint is successfully registered' }))
+            const msg = `Your complaint has been registered successfully. Your complaintID- ${params.Item.complaintid}`
+            const url = `http://login.smsadda.com/API/pushsms.aspx?loginID=giit&password=giitpc&mobile=+91${data.phone}&text=${msg}&senderid=GIITPC&route_id=1&Unicode=0`
+            console.log(url);
+            callback(null, success({status: true, message: 'successfully registered' }))
+
+            // axios.get(url).then(function(response){
+            //     console.log(response);
+            //     callback(null, success({status: true, message: 'successfully registered' }))
+            // })
+            // .catch(function(err){
+            //     console.log(err);
+            // })
         }
    })
 }

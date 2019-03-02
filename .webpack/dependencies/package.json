@@ -1,0 +1,10 @@
+{
+  "name": "backend-api",
+  "version": "1.0.0",
+  "description": "Packaged externals for backend-api",
+  "private": true,
+  "scripts": {},
+  "dependencies": {
+    "aws-sdk": "^2.412.0"
+  }
+}

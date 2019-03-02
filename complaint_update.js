@@ -64,5 +64,58 @@ export const main = (event, context, callback) => {
             }
     })
    }
+   // tranfer complaints
+   else if(data.type == 3){
+        const params = {
+            TransactItems: [
+                {
+                    Update: {
+                        TableName: process.env.COMPLAINTS_TABLE,
+                        Key: {
+                            complaintid: parseInt(result.complaintid)
+                        },
+                        UpdateExpression: `SET #officierid = :officierid, #officier_assigned = :officier_assigned, #status = :status`,
+                        ExpressionAttributeNames:{
+                            '#officierid': 'officierid',
+                            '#officier_assigned': 'officier_assigned',
+                            '#status': 'status'
+                        },
+                        ExpressionAttributeValues: {
+                            ':officierid': parseInt(data.officierid),
+                            ':officier_assigned': 1,
+                            ':1': 1
+                        },
+                        ReturnValues: 'ALL_NEW'
+                    }
+                },
+                {
+                    Update: {
+                        TableName: process.env.OFFICIERS_TABLE,
+                        Key: {
+                            officierid: parseInt(data.officierid)
+                        },
+                        UpdateExpression: `ADD #complaints :complaints`,
+                        ExpressionAttributeNames:{
+                            '#complaints': 'complaints'
+                        },
+                        ExpressionAttributeValues: {
+                            ':complaints': documentClient.createSet([data.toString()])
+                        },
+                        ReturnValues: 'ALL_NEW'
+                    }
+                }
+            ]
+        }
+        console.log(params.TransactItems);
+        
+        documentClient.transactWrite(params, (err, result) => {
+            if(err) {
+                console.log(err);
+            } else {
+                console.log(params)
+                callback(null, success({status: true, message: 'successfully transfered' }))
+            }
+        })
+   }
    
 }
