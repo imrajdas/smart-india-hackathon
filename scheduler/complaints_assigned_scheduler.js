@@ -10,7 +10,7 @@ export const main = (event, context, callback) => {
         const data = record.dynamodb.NewImage
         const parseData = parse({ 'M':  data})
         console.log(parseData);
-        if(parseData.status === 0){
+        if(parseData.status === 0 && parseData.officier_assigned == 0){
             const params = {
                 TableName: process.env.OFFICIERS_TABLE,
                 IndexName: 'pincode-index',

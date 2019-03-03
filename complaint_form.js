@@ -30,6 +30,7 @@ export const main = (event, context, callback) => {
         complaintid: Math.floor(Math.random() * 1000 * 60 * 60 * 24 * 365.25),
         name: data.fullname,
         lin: data.lin,
+        search_name: data.fullname.toLowerCase(),
         address: data.address,
         district: data.district,
         state: data.state,
@@ -38,7 +39,7 @@ export const main = (event, context, callback) => {
         email: data.email || '-',
         company_name: data.company_name,
         position: data.position,
-        problem_category: data.problem_category,
+        problem_category: data.complaint_subject,
         complaint_desc: data.complaint_desc,
         union_leader: data.union_leader || null,
         union_name: data.union_name || null,
@@ -69,15 +70,15 @@ export const main = (event, context, callback) => {
             const msg = `Your complaint has been registered successfully. Your complaintID- ${params.Item.complaintid}`
             const url = `http://login.smsadda.com/API/pushsms.aspx?loginID=giit&password=giitpc&mobile=+91${data.phone}&text=${msg}&senderid=GIITPC&route_id=1&Unicode=0`
             console.log(url);
-            callback(null, success({status: true, message: 'successfully registered' }))
+            // callback(null, success({status: true, message: 'successfully registered' }))
 
-            // axios.get(url).then(function(response){
-            //     console.log(response);
-            //     callback(null, success({status: true, message: 'successfully registered' }))
-            // })
-            // .catch(function(err){
-            //     console.log(err);
-            // })
+            axios.get(url).then(function(response){
+                console.log(response);
+                callback(null, success({status: true, message: 'successfully registered' }))
+            })
+            .catch(function(err){
+                console.log(err);
+            })
         }
    })
 }

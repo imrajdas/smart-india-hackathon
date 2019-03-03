@@ -6,15 +6,6 @@ var jwt = require('jsonwebtoken');
 const axios = require('axios')
 // sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-const genPassword = () => {
-        var text = "";
-        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      
-        for (var i = 0; i < 10; i++)
-          text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-        return text;
-}
 
 export const main = (event, context, callback) => {
 
@@ -30,8 +21,8 @@ export const main = (event, context, callback) => {
 //    }
    console.log(data);
    
-   const genUserName = `${data.lastname}${data.firstname}${Math.floor(Math.random() * 90 + 10 * 999)}`
-   const genPass = genPassword()
+   const genUserName = `${data.lastname}${data.firstname}${Math.floor(Math.random() * 90 + 10)}`
+   const genPass = `${data.lastname.toLowerCase()}@sih`
    const complaints = ['0']
    const params = {
        TableName: process.env.OFFICIERS_TABLE,
@@ -39,6 +30,7 @@ export const main = (event, context, callback) => {
         officierid: Math.floor(Math.random() * 1000 * 60 * 60 * 24 * 365.25),
         firstname: data.firstname,
         lastname: data.lastname,
+        search_name: `${data.firstname.toLowerCase()}${data.lastname.toLowerCase()}`,
         rank: data.rank,
         postingarea: data.postingarea,
         postingstate: data.postingstate,
@@ -72,10 +64,13 @@ export const main = (event, context, callback) => {
             axios.get(url).then(function(response){
                 console.log(response);
                 callback(null, success({status: true, message: 'officier add successfully' }))
+
             })
             .catch(function(err){
                 console.log(err);
             })
+            // callback(null, success({status: true, message: 'officier add successfully' }))
+
             // const msg = {
             //     to: `${data.email}`,
             //     from: 'test@example.com',

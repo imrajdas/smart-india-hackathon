@@ -93,6 +93,17 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: arn:aws:dynamodb:ap-south-1:*:table/officiers_${opt:stage, "prod"}/index/pincode-index
+    
+    - Effect: "Allow"
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: arn:aws:dynamodb:ap-south-1:*:table/officiers_${opt:stage, "prod"}/index/search_name-index
 
 functions:
   complaint_form:
@@ -155,7 +166,7 @@ functions:
     handler: scheduler/sentiment_scheduler.main
     name: ${self:provider.stage}-sentiment_scheduler
     events:
-      - stream: arn:aws:dynamodb:ap-south-1:166341922662:table/officiers_test/stream/2019-03-02T09:51:45.510
+      - stream: arn:aws:dynamodb:ap-south-1:166341922662:table/complaints_test/stream/2019-03-02T10:08:47.132
 
   officiers_complaint_scheduler:
     handler: scheduler/officiers_complaint_scheduler.main
@@ -183,6 +194,8 @@ resources:
             AttributeType: N
           - AttributeName: officier_assigned
             AttributeType: N
+          - AttributeName: search_name
+            AttributeType: S
         KeySchema:
           - AttributeName: complaintid
             KeyType: HASH
@@ -203,6 +216,12 @@ resources:
             KeyType: HASH
           Projection:
             ProjectionType: ALL
+        - IndexName: search_name-index
+          KeySchema:
+          - AttributeName: search_name
+            KeyType: HASH
+          Projection:
+            ProjectionType: ALL
 
     
     officiersTable:
@@ -216,6 +235,8 @@ resources:
             AttributeType: S
           - AttributeName: postingpincode
             AttributeType: S
+          - AttributeName: search_name
+            AttributeType: S  
         KeySchema:
           - AttributeName: officierid
             KeyType: HASH
@@ -233,6 +254,12 @@ resources:
         - IndexName: pincode-index
           KeySchema:
           - AttributeName: postingpincode
+            KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: search_name-index
+          KeySchema:
+          - AttributeName: search_name
             KeyType: HASH
           Projection:
             ProjectionType: ALL

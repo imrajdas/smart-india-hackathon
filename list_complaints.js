@@ -107,5 +107,36 @@ export const main = (event, context, callback) => {
             }
        })
     }
+
+    else if(data.type === 4){
+        const params = {
+            TableName: process.env.OFFICIERS_TABLE,
+            IndexName: 'search_name-index',
+            KeyConditionExpression: '#search_name = :search_name',
+            FilterExpression: '#postingpincode = :postingpincode OR #status <> :5',
+            ExpressionAttributeNames:{
+                '#search_name': 'search_name',
+                '#postingpincode': 'postingpincode',
+                '#status': '#status'
+            },
+            ExpressionAttributeValues: {
+                ':search_name': data.search_name,
+                ':postingpincode': data.postingpincode || '0',
+                ':5': 5
+            }
+        };
+       console.log(params);
+       
+       documentClient.query(params, (err, results) => {
+            if(err) {
+                console.log(err);
+                callback(null , failure({ status: false, message: 'failed to get the list' }))
+            } else {
+                console.log(results.Items)
+                callback(null , success({ status: true, message: results.Items }))
+    
+            }
+       })
+    }
     
 }
