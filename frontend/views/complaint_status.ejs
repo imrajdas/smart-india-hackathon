@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <!-- <link rel='stylesheet' href='/stylesheets/style.css' />  -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link rel='stylesheet' href='/stylesheets/admin_home.css' />
+    
+
+    <script src="/javascripts/admin_complaint_status.css.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfx7aC-7ITrwQs3F7eUViFIIThgWwc0xA&libraries=places"
+    async defer></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+
+  </head>
+  <body >
+        <% include admin/home/nav_bar.ejs %>
+        <div class="container">
+
+            <form action="/admim/complaint/status">
+                <div class="form-group">
+                  <label for="complaintid">Enter you complaintId</label>
+                  <input type="text" id="complaintid" name="complaintid" class="form-control">
+                </div>
+                <div class="form-group">
+                  <button type="button" onclick="search()" class="btn btn-success">Search</button>
+                </div>
+              </div>
+            </form>
+
+        </div>
+        
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="/javascripts/admin_home.js"></script>
+    
+  </body>
+</html>

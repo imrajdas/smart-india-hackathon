@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/complaint_registration.css' />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfx7aC-7ITrwQs3F7eUViFIIThgWwc0xA&libraries=places,geocode"
+    async defer></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <style>
+        #t{
+            margin-top: 20px;
+        }
+    </style>
+  </head>
+  <body >
+    <% include index/nav_bar.ejs %>
+    <div class="row" id="t">
+        <div class="col">
+            <div class="" id="google_translate_element"></div>
+        </div>
+        <div class="col">
+            <button class="btn btn-primary" id="start-record-btn">Start Voice Register</button>
+        </div>
+        <div class="col">
+            <button class="btn btn-danger" id="pause-record-btn">Stop Voice Registration</button>
+        </div>
+    </div>
+
+    <div class="container" style="margin-top:20px;">
+        <div id="danger-alert"></div>          
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label for="lin"><b>Enter your UAN (Unique Account Number)</b></label>
+                    <input class="form-control" type="text" id="lin" x-webkit-speech />
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label for="fullname"><b>Full Name</b></label>
+                    <input class="form-control" type="text" id="fullname">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                        <label><b>Do you have a email?  </b></label>
+                        <label class="radio-inline"><input type="radio" name="optradio" value="email_yes" id="email_yes">Yes </label>
+                        <label class="radio-inline"><input type="radio" name="optradio" value="email_no" id="email_no" checked>No</label>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group" id="email_form">
+                    <label for="email"><b>Email</b></label>
+                    <input class="form-control" type="text" id="email">
+                </div>
+            </div>
+        </div>
+        
+        
+        
+
+        <div class="row">
+            <div class="col">                        
+                    <div class="form-group">
+                        <label for="phone"><b>Phone Number</b></label>
+                        <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">+91</span>
+                                <input class="form-control" type="number" id="phone">
+                        </div>    
+                    </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                        <label for="address"><b>Address</b></label>
+                        <input class="form-control" type="text" id="address">
+                </div>
+            </div>
+            
+        </div>
+
+        
+
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label for="district"><b>District</b></label>
+                    <input class="form-control" type="text" id="district">
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label for="state"><b>State</b></label>
+                    <input class="form-control" type="text" id="state">
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label for="pincode"><b>Pincode</b></label>
+                    <input class="form-control" type="number" id="pincode">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label for="company"><b>Name of the Company/Organisation</b></label>
+                    <input class="form-control" type="text" id="company">
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                        <label for="rank"><b>Position/Rank in the Company/Organisation</b></label>
+                        <input class="form-control" type="text" id="rank">
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+                <label><b>Do you have a union?  </b></label>
+                <label class="radio-inline"><input type="radio" name="optradio" value="yes" id="yes">Yes </label>
+                <label class="radio-inline"><input type="radio" name="optradio" value="no" id="no" checked>No</label>
+        </div>
+
+        <div class="row" id="union">
+            <div class="col">
+                <div class="form-group">
+                    <label for="union_name"><b>Name of the Union</b></label>
+                    <input class="form-control" type="text" id="union_name">
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label for="union_leader"><b>Name of the Union Leader</b></label>
+                    <input class="form-control" type="text" id="union_leader">
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+                <label for="complaint_subject">Complaint Subject</label>
+                <select class="form-control" id="complaint_subject">
+                    <option>-- Select your category --</option>
+                    <option value="Wages Problem">Wages Problem</option>
+                    <option value="Equality of gender">Equality of gender</option>
+                    <option value="Safety, Health">Safety, Health</option>
+                    <option value="Work Condition">Work Condition</option>
+                    <option value="Security">Security</option>
+                    <option value="Poverty and child labour">Poverty and child labour</option>
+                    <option value="Transport Problem">Transport Problem</option>
+                </select>
+            </div>
+        <div class="form-group">
+                <label for="complaint_desc"><b>Enter the complaint description</b></label>
+                <textarea class="form-control" id="complaint_desc" rows="5"></textarea>
+        </div>
+        <br>
+        <button class="btn btn-primary" id="register">Register Complaint</button>
+
+    <script src="/javascripts/dum_complaint.js"></script>
+    </div>
+  </body>
+</html>
