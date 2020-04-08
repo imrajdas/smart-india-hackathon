@@ -1,0 +1,269 @@
+service: backend-api
+
+plugins:
+  - serverless-webpack
+  # - serverless-domain-manager
+
+custom:
+  webpackIncludeModules: true
+  packExternalModulesMaxBuffer: 409600000
+  # customDomain:
+  #   domainName: testapi.blinkdots.com
+  #   basePath: '/v_1.0'
+  #   stage: ${self:provider.stage}
+  #   createRoute53Record: true
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: ${opt:stage, "test"}
+  region: ap-south-1
+  # deploymentBucket: api.blinkdots.${opt:stage, "prod"}
+  versionFunctions: false # Optional function versioning
+  memorySize: 128 # Overwrite the default memory size. Default is 1024
+  timeout: 5 # optional, Default is 6 sec
+  environment:
+    COMPLAINTS_TABLE: complaints_${self:provider.stage}
+    SENDGRID_API_KEY: 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
+    OFFICIERS_TABLE:  officiers_${self:provider.stage}
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: arn:aws:dynamodb:ap-south-1:*:table/complaints_${opt:stage, "prod"}
+    
+    - Effect: "Allow"
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: arn:aws:dynamodb:ap-south-1:*:table/complaints_${opt:stage, "prod"}/index/officierid-index
+ 
+    - Effect: "Allow"
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: arn:aws:dynamodb:ap-south-1:*:table/complaints_${opt:stage, "prod"}/index/officier_assigned-index
+
+    - Effect: "Allow"
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: arn:aws:dynamodb:ap-south-1:*:table/officiers_${opt:stage, "prod"}
+  
+    - Effect: "Allow"
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: arn:aws:dynamodb:ap-south-1:*:table/officiers_${opt:stage, "prod"}/index/username-index
+    
+    - Effect: "Allow"
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: arn:aws:dynamodb:ap-south-1:*:table/officiers_${opt:stage, "prod"}/index/pincode-index
+    
+    - Effect: "Allow"
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: arn:aws:dynamodb:ap-south-1:*:table/officiers_${opt:stage, "prod"}/index/search_name-index
+
+functions:
+  complaint_form:
+    handler: complaint_form.main
+    name: ${self:provider.stage}-complaint_form
+    events:
+      - http:
+          path: complaint/create
+          method: post
+          cors: true
+        
+  complaint_update:
+    handler: complaint_update.main
+    name: ${self:provider.stage}-complaint_update
+    events:
+      - http:
+          path: complaint/update/{complaintid}
+          method: put
+          cors: true
+
+  
+  add_officier:
+    handler: add_officier.main
+    name: ${self:provider.stage}-add_officier
+    events:
+      - http:
+          path: add/officier
+          method: post
+          cors: true
+
+  list_complaints:
+    handler: list_complaints.main
+    name: ${self:provider.stage}-list_complaints
+    events:
+      - http:
+          path: list/complaints/{officierid}
+          method: post
+          cors: true
+  
+  officier_login:
+    handler: officier_login.main
+    name: ${self:provider.stage}-officier_login
+    events:
+      - http:
+          path: officier/login/{username}/{password}
+          method: get
+          cors: true
+      
+  list_officier:
+    handler: list_officier.main
+    name: ${self:provider.stage}-list_officier
+    events:
+      - http:
+          path: officier/list
+          method: get
+          cors: true
+
+
+  sentiment_scheduler:
+    handler: scheduler/sentiment_scheduler.main
+    name: ${self:provider.stage}-sentiment_scheduler
+    events:
+      - stream: arn:aws:dynamodb:ap-south-1:166341922662:table/complaints_test/stream/2019-03-02T10:08:47.132
+
+  officiers_complaint_scheduler:
+    handler: scheduler/officiers_complaint_scheduler.main
+    name: ${self:provider.stage}-officiers_complaint_scheduler
+    events:
+      - stream: arn:aws:dynamodb:ap-south-1:166341922662:table/officiers_test/stream/2019-03-02T09:51:45.510
+  
+  complaints_assigned_scheduler:
+    handler: scheduler/complaints_assigned_scheduler.main
+    name: ${self:provider.stage}-complaints_assigned_scheduler
+    events:
+      - stream: arn:aws:dynamodb:ap-south-1:166341922662:table/complaints_test/stream/2019-03-02T10:08:47.132
+
+# Resources
+resources:
+  Resources:
+    complaintsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: complaints_${opt:stage, "prod"}
+        AttributeDefinitions:
+          - AttributeName: complaintid
+            AttributeType: N
+          - AttributeName: officierid
+            AttributeType: N
+          - AttributeName: officier_assigned
+            AttributeType: N
+          - AttributeName: search_name
+            AttributeType: S
+        KeySchema:
+          - AttributeName: complaintid
+            KeyType: HASH
+        SSESpecification:
+          SSEEnabled: true
+        BillingMode: PAY_PER_REQUEST
+        GlobalSecondaryIndexes:
+        # officierid index
+        - IndexName: officierid-index
+          KeySchema:
+          - AttributeName: officierid
+            KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: officier_assigned-index
+          KeySchema:
+          - AttributeName: officier_assigned
+            KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: search_name-index
+          KeySchema:
+          - AttributeName: search_name
+            KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
+    
+    officiersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: officiers_${opt:stage, "prod"}
+        AttributeDefinitions:
+          - AttributeName: officierid
+            AttributeType: N
+          - AttributeName: username
+            AttributeType: S
+          - AttributeName: postingpincode
+            AttributeType: S
+          - AttributeName: search_name
+            AttributeType: S  
+        KeySchema:
+          - AttributeName: officierid
+            KeyType: HASH
+        SSESpecification:
+          SSEEnabled: true
+        BillingMode: PAY_PER_REQUEST
+        GlobalSecondaryIndexes:
+        # username index
+        - IndexName: username-index
+          KeySchema:
+          - AttributeName: username
+            KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: pincode-index
+          KeySchema:
+          - AttributeName: postingpincode
+            KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: search_name-index
+          KeySchema:
+          - AttributeName: search_name
+            KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+    
+
+
+
