@@ -1,4 +1,6 @@
 ## Smart India Hackathon 2019
+![sih](sih-logo.jpg)
+
 ### This is a meta repository of SIH 2019.
 
 ### Problem Statement
