@@ -1,5 +1,5 @@
 ## Smart India Hackathon 2019
-![sih](sih-logo.jpg)
+<img src="sih-logo.jpg" width="500" height="300" />
 
 ### This is a meta repository of SIH 2019.
 
